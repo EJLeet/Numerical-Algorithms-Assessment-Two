@@ -33,7 +33,7 @@ double golden_section(double w1, double w2, double alpha)
     double x1 = xl + d, x2 = xu - d;
     int count = 0;
 
-    while ((x1 - x2) > 0.00001)
+    while (fabs((x1 - x2)) > 0.00001)
     {
         if (l(w1, w2, x1, alpha) > l(w1, w2, x2, alpha))
         {
