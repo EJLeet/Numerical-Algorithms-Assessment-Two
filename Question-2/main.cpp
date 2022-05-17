@@ -4,7 +4,7 @@
 using std::endl;
 using std::cout;
 
-// set fuinction to 0 and use secant
+// set fuinction to 0 and use bisection
 double f(double theta)
 {
     return std::tan(theta) * 35 - (9.81 / (2 * 20 * 20 *
