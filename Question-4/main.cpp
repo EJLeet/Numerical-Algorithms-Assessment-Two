@@ -43,7 +43,7 @@ int main()
              <<  pow(10, F_log(a, b, c, d[i], s[i])) << endl;
     
     // solve f at given values for d and s
-    cout << "F = " << F(a, b, c, 2.5, 0.025) << " when D = 2.5 and S = 0.025" << endl;
+    cout << "F = " << F(a, b, c, 2.5, 0.025) << " at D = 2.5 and S = 0.025" << endl;
 
     return 0;
 }
