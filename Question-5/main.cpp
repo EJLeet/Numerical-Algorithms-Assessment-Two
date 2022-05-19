@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <fstream>
 
 using std::cout;
 using std::endl;
@@ -14,7 +15,8 @@ double golden_section(double w1, double w2, double alpha);
 int main()
 {
     double w1 = 2, w2 = 2;
-    for (double alpha = M_PI / 2; alpha < M_PI; alpha += 0.01)
+    std::ofstream file("output.txt");
+    for (double alpha = 0.0; alpha < M_PI; alpha += 0.01)
     {
         
         double temp = golden_section(w1, w2, alpha);
@@ -22,7 +24,9 @@ int main()
 
         cout << "Rod Length = " << length
              << " at alpha = " << alpha * 180 / M_PI << endl;
+        file << length << " " << alpha << endl;
     }
+    file.close();
     return 0;
 }
 
