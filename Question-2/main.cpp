@@ -14,8 +14,11 @@ double f(double theta)
 double bisection(double a, double b);
 
 int main()
-{
-    cout << "Theta = " << bisection(0, M_PI / 2) << " degrees" << endl;
+{   
+    double theta1 = bisection(0, M_PI / 2);
+    double theta2 = bisection(theta1 * M_PI / 180, M_PI / 2);
+    cout << "Theta 1 = " << theta1 << " degrees" << endl
+         << "Theta 2 = " << theta2 << " degrees" << endl;
 
     return 0;
 }
