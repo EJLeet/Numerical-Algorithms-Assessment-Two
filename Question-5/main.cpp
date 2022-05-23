@@ -14,7 +14,7 @@ double golden_section(double w1, double w2, double alpha);
 
 int main()
 {
-    double w1 = 2, w2 = 2;
+    double w1 = 11, w2 = 1;
     std::ofstream file("output.txt");
     for (double alpha = 0.0; alpha < M_PI; alpha += 0.01)
     {
@@ -22,8 +22,8 @@ int main()
         double temp = golden_section(w1, w2, alpha);
         double length = l(w1, w2, temp, alpha);
 
-        cout << "Rod Length = " << length
-             << " at alpha = " << alpha * 180 / M_PI << endl;
+        cout << "Rod Length = " << length << "m"
+             << " at alpha = " << alpha * 180 / M_PI << " degrees" << endl;
         file << length << " " << alpha << endl;
     }
     file.close();
@@ -31,24 +31,37 @@ int main()
 }
 
 double golden_section(double w1, double w2, double alpha)
-{
-    double ratio = 0.61803, xl = 0, xu = M_PI - alpha;
-    double d = ratio * (xu - 0);
-    double x1 = xl + d, x2 = xu - d;
-    int count = 0;
+{/*
+    This function performs the golden section search for the
+    minimum of theta at some alpha.
+                                                                */
+    // initialise variables
+    const double ratio = 0.61803;
+    double xl = 0, xu = M_PI - alpha;
+    double x1 = xl + ratio * (xu - xl), x2 = x2 = xu - ratio * (xu - xl);
+    double fx1 = l(w1, w2, x1, alpha), fx2 = l(w1, w2, x2, alpha), 
+           fxl = l(w1, w2, xl, alpha), fxu = l(w1, w2, xu, alpha);
 
-    while (fabs((x1 - x2)) > 0.00001)
+    while (fabs(xu - xl) > 0.00001)
     {
-        if (l(w1, w2, x1, alpha) > l(w1, w2, x2, alpha))
+        if (fx1 < fx2)
         {
+            xl = x2;
+            fxl = fx2;
             x2 = x1;
-            x1 = xl + d;
+            fx2 = fx1;     
+            x1 = xl + ratio * (xu - xl);
+            fx1 = l(w1, w2, x1, alpha);
         }
         else
         {
+            xu = x1;
+            fxu = fx1;
             x1 = x2;
-            x2 = xu - d;
-        }
+            fx1 = fx2;    
+            x2 = xu - ratio * (xu - xl);
+            fx2 = l(w1, w2, x2, alpha);
+        }   
+    }  
+    return xl;  
     }
-    return x1;
-}
