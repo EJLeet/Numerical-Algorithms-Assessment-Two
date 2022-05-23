@@ -7,14 +7,14 @@ using std::endl;
 
 // function will return the length of the rod at some theta and alpha
 double l(double w1, double w2, double theta, double alpha)
-{ return ((w1 / std::sin(theta)) + (w2 / (std::sin(M_PI - alpha - theta)))); }
+{ return -((w1 / std::sin(theta)) + (w2 / (std::sin(M_PI - alpha - theta)))); }
 
 // perform golden section search
 double golden_section(double w1, double w2, double alpha);
 
 int main()
 {
-    double w1 = 11, w2 = 1;
+    double w1 = 2, w2 = 2;
     std::ofstream file("output.txt");
     for (double alpha = 0.0; alpha < M_PI; alpha += 0.01)
     {
@@ -22,7 +22,7 @@ int main()
         double temp = golden_section(w1, w2, alpha);
         double length = l(w1, w2, temp, alpha);
 
-        cout << "Rod Length = " << length << "m"
+        cout << "Rod Length = " << length * -1 << "m"
              << " at alpha = " << alpha * 180 / M_PI << " degrees" << endl;
         file << length << " " << alpha << endl;
     }
@@ -44,7 +44,7 @@ double golden_section(double w1, double w2, double alpha)
 
     while (fabs(xu - xl) > 0.00001)
     {
-        if (fx1 < fx2)
+        if (fx1 > fx2)
         {
             xl = x2;
             fxl = fx2;
