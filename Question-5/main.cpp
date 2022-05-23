@@ -32,9 +32,12 @@ int main()
 
 double golden_section(double w1, double w2, double alpha)
 {/*
-    This function performs the golden section search for the
-    minimum of theta at some alpha.
-                                                                */
+    This function performs the golden section search for 
+    theta at some alpha. The search is a maximum search
+    however the function is negated as well as the result.
+    This gives us the minimum by using the maximum 
+    golden section search.
+                                                            */
     // initialise variables
     const double ratio = 0.61803;
     double xl = 0, xu = M_PI - alpha;
