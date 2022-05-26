@@ -41,10 +41,11 @@ double golden_section(double w1, double w2, double alpha)
     // initialise variables
     const double ratio = 0.61803;
     double xl = 0, xu = M_PI - alpha;
-    double x1 = xl + ratio * (xu - xl), x2 = x2 = xu - ratio * (xu - xl);
+    double x1 = xl + ratio * (xu - xl), x2 = xu - ratio * (xu - xl);
     double fx1 = l(w1, w2, x1, alpha), fx2 = l(w1, w2, x2, alpha), 
            fxl = l(w1, w2, xl, alpha), fxu = l(w1, w2, xu, alpha);
 
+    // > tolerance for minimal gss
     while (fabs(xu - xl) > 0.00001)
     {
         if (fx1 > fx2)

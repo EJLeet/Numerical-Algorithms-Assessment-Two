@@ -14,13 +14,14 @@ void linear_regression(std::vector<double> x, std::vector<double> y);
 int main()
 {
     // part b
-    double wb = 1.663 * x6, fuel = 1.300 * x6;
-    double fuel_part = fuel / 127;
+    double wb = 1.663 * x6;
 
     cout << "Root of the moment equation: Theta (radians) = " << secant(wb) << endl;
 
     // part c
     std::vector<double> x, y;
+    double fuel = 1.300 * x6;
+    double fuel_part = fuel / 127;
 
     for (int i = 0; i < 128; i++)
     {
