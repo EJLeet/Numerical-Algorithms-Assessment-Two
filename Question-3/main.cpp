@@ -94,7 +94,7 @@ double secant(double wb)
 {
     double a = 0, b = M_PI / 2;
     double c;
-    while (fabs(b - a) >= 0.0005)
+    while (fabs(b - a) >= 0.0001)
     {
         c = b - (moment(wb, b) * (b - a)) / (moment(wb, b) - moment(wb, a));
         a = b;

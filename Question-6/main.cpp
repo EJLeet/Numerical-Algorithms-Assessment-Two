@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <fstream>
+#include <array>
 #include "Eigen/Core"
 #include "LBFGS.h"
 #include "LBFGSB.h"
@@ -15,8 +16,8 @@ double f(double ep)
 
 class Energy
 {
-private:
-    int n, p;
+    const int n;
+    int p;
 
 public:
     Energy(int n_, int p_) : n(n_), p(p_)  {}
@@ -33,19 +34,19 @@ public:
             for (int j = i + 1; j < n; j++)
             {
                 // update energy
-                double posx = x[3 * i] - x[3 * j];
-                double posy = x[3 * i + 1] - x[3 * j + 1];
-                double posz = x[3 * i + 2] - x[3 * j + 2];
-                double r = sqrt(posx * posx + posy * posy + posz * posz);
+                double disx = x[3 * i] - x[3 * j];
+                double disy = x[3 * i + 1] - x[3 * j + 1];
+                double disz = x[3 * i + 2] - x[3 * j + 2];
+                double r = sqrt(disx * disx + disy * disy + disz * disz);
                 double ep = exp(p * (r - 1));
                 double v = f(ep);
                 V += v;
 
                 // get gradients
                 double deriv = 2 * p * ep * (ep - 1);
-                double dx = deriv * posx / r;
-                double dy = deriv * posy / r;
-                double dz = deriv * posz / r;
+                double dx = deriv * disx / r;
+                double dy = deriv * disy / r;
+                double dz = deriv * disz / r;
 
                 // update positive for one grad negative for other
                 grad[i * 3]     += dx;
@@ -61,53 +62,64 @@ public:
     }
 };
 
-void part_a();
-void part_b();
-
+void find_minima(VectorXd x, const int n, int p);
 
 int main()
 {
-    part_a();
-    part_b();
+    double ep;
+    const int n = 2;
+    std::array<int, 4> p = {3, 6, 10, 14};
+
+    // outfiles for part a graphs
+    std::ofstream p3("3.txt");
+    std::ofstream p6("6.txt");
+    std::ofstream p10("10.txt");
+    std::ofstream p14("14.txt");
+
+    // traverse each p value and all r values to create graphs
+    for (auto i : p)
+    {
+        for (double r = 0.6; r <= 2.0; r += 0.001)
+        {
+            ep = exp(i * (r - 1));
+            switch(i)
+            {
+                case 3 : { p3  << r << " " << f(ep) << endl; break; }
+                case 6 : { p6  << r << " " << f(ep) << endl; break; }
+                case 10: { p10 << r << " " << f(ep) << endl; break; }
+                case 14: { p14 << r << " " << f(ep) << endl; break; }
+            }
+        }
+    }
+
+    /*
+        Find energy configuration between two 
+        atoms for p = 3, 6, 10
+                                            */
+    // Initial atoms decleration
+    VectorXd x = VectorXd::Zero(3 * n);
+
+    // first particle xyz
+    x[0] = 0.8;
+    x[1] = -0.1;
+    x[2] = 18;
+
+    // second particle xyz
+    x[3] = 0.7;
+    x[4] = -1.1;
+    x[5] = -0.3;
+
+    // find minima across different p
+    // exclude p = 14 due to p = 14 being too large
+    for (int i = 0; i < p.size() - 1; i++)
+        find_minima(x, n, p[i]);
+
     return 0;
 }
 
-void part_a()
-{// get function and r values for 5 constant p vals
 
-    double ep;
-    std::ofstream p3("3.txt");
-    for (double r = 0.6; r <= 2.0; r += 0.001)
-    {
-        ep = exp(3 * (r - 1));
-        p3 << r << " " << f(ep) << endl;
-    }
-
-    std::ofstream p6("6.txt");
-    for (double r = 0.6; r <= 2.0; r += 0.001)
-    {
-        ep = exp(6 * (r - 1));
-        p6 << r << " " << f(ep) << endl;
-    }
-
-    std::ofstream p10("10.txt");
-    for (double r = 0.6; r <= 2.0; r += 0.001)
-    {
-        ep = exp(10 * (r - 1));
-        p10 << r << " " << f(ep) << endl;
-    }
-
-    std::ofstream p14("14.txt");
-    for (double r = 0.6; r <= 2.0; r += 0.001)
-    {
-        ep = exp(14 * (r - 1));
-        p14 << r << " " << f(ep) << endl;
-    }
-}
-
-void part_b()
+void find_minima(VectorXd x, const int n, int p)
 {
-    const int n = 2;
     // Set up parameters
     LBFGSParam<double> param;
     param.epsilon = 1e-6;
@@ -115,26 +127,15 @@ void part_b()
 
     // Create solver and function object
     LBFGSSolver<double> solver(param);
-    Energy fun(n, 3);
+    Energy fun(n, p);
 
-    // Initial guess
-    VectorXd x = VectorXd::Zero(3 * n);
-
-    // first particle xyz
-    x[0] = 1.8;
-    x[1] = 2.8;
-    x[2] = 3.8;
-
-    // second particle xyz
-    x[3] = 4;
-    x[4] = -1;
-    x[5] = 18;
-
-    // x will be overwritten to be the best point found
+    // fx will be overwritten to minima found
     double fx;
     int niter = solver.minimize(fun, x, fx);
 
-    std::cout << niter << " iterations" << std::endl;
-    std::cout << "New xyz for particles = " << x.transpose() << std::endl;
-    std::cout << "Minima of f(x) = " << fx << std::endl;
+    cout << "p = " << p << endl;
+    cout << niter << " iterations" << endl;
+    cout << "New xyz for particles = " << x.transpose() << endl;
+    cout << "Minima of f(x) = " << fx << endl << endl;
 }
+
