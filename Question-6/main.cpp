@@ -161,40 +161,40 @@ int main()
             P << ") = " << part_b.best << endl;
     }
 
-// /*
-//         Part C - A
-//                     */
+/*
+        Part C - A
+                    */
 
-//     cout << endl << endl << "Part C - A" << endl;
+    cout << endl << endl << "Part C - A" << endl;
      int iter = 100000;
-//     std::ofstream c_a_results("c_a_results.txt");
-//     for (int n = 2; n <= 32; n++)
-//     {
-//         N = n;
-//         c_a_results << N;
-//         MinimizationExample part_ca;
-//         for (auto pval : p)
-//         {
-//             P = pval;
+    std::ofstream c_a_results("c_a_results.txt");
+    for (int n = 2; n <= 32; n++)
+    {
+        N = n;
+        c_a_results << N;
+        MinimizationExample part_ca;
+        for (auto pval : p)
+        {
+            P = pval;
 
-//             // loops for trials changing atom positions per iter
-//             for (int t = 0; t < iter; t++)
-//             {
-//                 if (t % 1000 == 0) 
-//                     cout << "Progress Part C - A, N = " << N << ",P = " << P << ": " << t << "/" << iter << endl;
+            // loops for trials changing atom positions per iter
+            for (int t = 0; t < iter; t++)
+            {
+                if (t % 1000 == 0) 
+                    cout << "Progress Part C - A, N = " << N << ",P = " << P << ": " << t << "/" << iter << endl;
                 
-//                 Eigen::VectorXd x2 = Eigen::VectorXd::Zero(N * 3);
-//                 set_position(x2);
+                Eigen::VectorXd x2 = Eigen::VectorXd::Zero(N * 3);
+                set_position(x2);
 
-//                 part_ca.run(x2);
-//             }
+                part_ca.run(x2);
+            }
 
-//             // save results to file
-//             c_a_results << " " << part_ca.minima_count.size();
-//             part_ca.minima_count.clear();
-//         }
-//         c_a_results << endl;
-//     }
+            // save results to file
+            c_a_results << " " << part_ca.minima_count.size();
+            part_ca.minima_count.clear();
+        }
+        c_a_results << endl;
+    }
 
     /*
         Part C - B
