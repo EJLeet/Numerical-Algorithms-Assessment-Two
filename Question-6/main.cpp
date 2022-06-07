@@ -1,5 +1,5 @@
-#include "lbfgs.hpp"
-#include "Eigen/Eigen"
+#include "lbfgs.hpp" // https://github.com/ZJU-FAST-Lab/LBFGS-Lite
+#include "Eigen/Eigen" // https://eigen.tuxfamily.org/index.php?title=Main_Page
 #include <iostream>
 #include <iomanip>
 #include <vector>
@@ -40,20 +40,14 @@ public:
                                         monitorProgress,
                                         this,
                                         params);
-        /* Report the result. */
-        // std::cout << std::setprecision(4)
-        //           << "================================" << std::endl
-        //           << "L-BFGS Optimization Returned: " << ret << std::endl
-        //           << "Minimized Cost: " << finalCost << std::endl
-        //           << "Optimal Variables: " << std::endl
-        //           << x.transpose() << std::endl;
-        
-        // comment this out if running part b
+
+        // count distinct minima
         auto it = std::find_if(minima_count.begin(), minima_count.end(), 
             [finalCost](double b) { return fabs(finalCost - b) < 1e-6; });
         if (it == minima_count.end())
             minima_count.push_back(finalCost);
-        
+
+        // get global config and cost
         if (finalCost < best)
         {
             best = finalCost;
@@ -116,108 +110,129 @@ private:
     {
         g.cwiseAbs().maxCoeff();
         x.transpose();
-
-        // std::cout << std::setprecision(4)
-        //           << "================================" << std::endl
-        //           << "Iteration: " << k << std::endl
-        //           << "Function Value: " << fx << std::endl
-        //           << "Gradient Inf Norm: " << g.cwiseAbs().maxCoeff() << std::endl
-        //           << "Variables: " << std::endl
-        //           << x.transpose() << std::endl;
         return 0;
     }
 };
 
-int main(int argc, char **argv)
+int main()
 {
-    int iter = std::atoi(argv[1]);
-    P = std::atoi(argv[2]);
-    N = std::atoi(argv[3]);
-    // /*
-    //     Part A
-    //             */
-    // double ep;
-    // std::array<int, 4> p = {3, 6, 10, 14};
-    // // outfiles for part a graphs
-    // std::ofstream p3("3.txt");
-    // std::ofstream p6("6.txt");
-    // std::ofstream p10("10.txt");
-    // std::ofstream p14("14.txt");
+    /*
+        Part A
+                */
+    double ep;
+    std::array<int, 4> p = {3, 6, 10, 14};
+    // outfiles for part a graphs
+    std::ofstream p3("3.txt");
+    std::ofstream p6("6.txt");
+    std::ofstream p10("10.txt");
+    std::ofstream p14("14.txt");
 
-    // for (auto i : p)
-    // {
-    //     for (double r = 0.6; r <= 2.0; r += 0.001)
-    //     {
-    //         ep = exp(i * (1 - r));
-    //         switch(i)
-    //         {
-    //             case 3 : { p3  << r << " " << f(ep) << endl; break; }
-    //             case 6 : { p6  << r << " " << f(ep) << endl; break; }
-    //             case 10: { p10 << r << " " << f(ep) << endl; break; }
-    //             case 14: { p14 << r << " " << f(ep) << endl; break; }
-    //         }
-    //     }
-    // }
+    for (auto i : p)
+    {
+        for (double r = 0.6; r <= 2.0; r += 0.001)
+        {
+            ep = exp(i * (1 - r));
+            switch(i)
+            {
+                case 3 : { p3  << r << " " << f(ep) << endl; break; }
+                case 6 : { p6  << r << " " << f(ep) << endl; break; }
+                case 10: { p10 << r << " " << f(ep) << endl; break; }
+                case 14: { p14 << r << " " << f(ep) << endl; break; }
+            }
+        }
+    }
 
-    // /*
-    //     Part B
-    //     Set global P values
-    //     Comment out minima count in optimiser
-    //     if you run part b
-    //                                              */
-    // double minima;
-    // MinimizationExample part_b;
-    // cout << "n = " << N << ", p = " << P << endl;
-    // Eigen::VectorXd x = Eigen::VectorXd::Zero(N * 3), x_;
-    // set_position(x);
-    
-    // cout << "Original particle position (x y z): ";
-    // int count = 0;
-    // for (auto i : x) 
-    // {
-    //     if (count++ % 3 == 0) cout << endl;
-    //     cout << i << "    ";
-    // }
-    // cout << endl;
+    /*
+        Part B
+                    */
+    N = 2;
+    cout << "PART B" << endl;
+    double minima;
+    MinimizationExample part_b;
 
-    // part_b.run(x);
+    for (auto i : p)
+    {
+        Eigen::VectorXd x = Eigen::VectorXd::Zero(N * 3);
+        set_position(x);
+        P = i;
+        part_b.run(x);
 
-    // count = 0;
-    // for (auto i : x_) 
-    // {
-    //     if (count++ % 3 == 0) cout << endl;
-    //     cout << i << "    ";
-    // }
-    // cout << endl << endl;
+        cout << "minima at n(" << N << "), p(" << 
+            P << ") = " << part_b.best << endl;
+    }
 
 /*
-        Part C
-        Set global N/P values
-                                */
-    MinimizationExample part_c;
-    std::vector<double> minima_count;
-    //int iter = 100000000;
-    for (int t = 0; t < iter; t++)
-    {
-        if (t % 1000 == 0) cout << "Progress: " <<  t << "/" << iter << endl;
-        Eigen::VectorXd x2 = Eigen::VectorXd::Zero(N * 3), x2_;
-        set_position(x2);
+        Part C - A
+                    */
 
-        part_c.run(x2);
+    cout << endl << endl << "Part C - A" << endl;
+    int iter = 100000;
+    std::ofstream c_a_results("c_a_results.txt");
+    for (int n = 2; n <= 32; n++)
+    {
+        N = n;
+        c_a_results << N;
+        MinimizationExample part_ca;
+        for (auto pval : p)
+        {
+            P = pval;
+
+            // loops for trials changing atom positions per iter
+            for (int t = 0; t < iter; t++)
+            {
+                if (t % 1000 == 0) 
+                    cout << "Progress Part C - A, N = " << N << ",P = " << P << ": " << t << "/" << iter << endl;
+                
+                Eigen::VectorXd x2 = Eigen::VectorXd::Zero(N * 3);
+                set_position(x2);
+
+                part_ca.run(x2);
+            }
+
+            // save results to file
+            c_a_results << " " << part_ca.minima_count.size();
+            part_ca.minima_count.clear();
+        }
+        c_a_results << endl;
     }
-    cout << "Count of distinc minima at n(" << N << "), p(" << 
-        P << ") = " << part_c.minima_count.size() << endl
-        << "Global Minima = " << part_c.best << endl
-        << "Atomic Configuration: " << endl << part_c.global_config << endl;
+
+    /*
+        Part C - B
+                    */
+
+    cout << endl << endl << "Part C - B" << endl;
+    std::ofstream c_b_results("c_b_results.txt");
+    P = 6;
+    for (int n = 2; n <= 32; n++)
+    {
+        MinimizationExample part_cb;
+        N = n;
+
+        // loops for trials changing atom positions per iter
+        for (int t = 0; t < iter; t++)
+        {
+            if (t % 1000 == 0) 
+                cout << "Progress Part C - B, N = " << N << ",P = " << ": " <<  t << "/" << iter << endl;
+            
+            Eigen::VectorXd x3 = Eigen::VectorXd::Zero(N * 3);
+            set_position(x3);
+
+            part_cb.run(x3);
+        }
+        
+        // save results to file
+        c_b_results << N << " " << part_cb.best << " " << endl << part_cb.global_config << endl << endl;
+        
+    }
 
     return 0;
-   
 }
 
 void set_position(Eigen::VectorXd& x)
-{
+{// set rand atomic positions based on n^1/3
     double d = 2.2 * sqrt(3) * (pow(N, 0.333) - 1) * 
         (0.8 + double(rand()) / double(RAND_MAX));
-    for (int i = 0; i < N * 3; i++)
+
+    for (int i = 0; i < N * 3; i++) 
         x[i] = (double(rand()) / double(RAND_MAX) - 0.5) * d;
 }
