@@ -8,7 +8,7 @@ AUTHOR
 
 ABOUT
 
-    This assignment involved creating five programs to solve and experiment on five numerical based algorithms. As well as creating c++ source code to solve these problems, extensive experimentation and theoretical analysis was to be conducted, and is included in the report attached to this submission. Python code was used to evaluate the output of the c++ code and to create a visiual representation of the data.
+    This assignment involved creating five programs to solve and experiment on five numerical based algorithms. As well as creating c++ source code to solve these problems, extensive experimentation and theoretical analysis was to be conducted, and is included in the report attached to this submission. Python code was used to evaluate the output of the c++ code and to create a visiual representation of the data. Question 6 is contained in a seperate repository. 
 
 Compiling
 
@@ -23,10 +23,3 @@ Run Time
     After compilation, the below command can be executed from the question folder, replacing x with the question you wish to run:
 
     ./questionx
-
-    Question six requires the Eigen Library as well as the LBFGS optimiser which were sourced from below. Both source files are included in this submission. This problem requires three command line arguments; iterations, rho and number of atoms (n). The below code is an example of 1000 iterations where rho = 6 and n = 10.
-
-    ./question6 1000 6 10
-
-    https://github.com/ZJU-FAST-Lab/LBFGS-Lite
-    https://eigen.tuxfamily.org/index.php?title=Main_Page
